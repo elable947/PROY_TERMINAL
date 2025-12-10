@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+.env
+
+# Node
+node_modules/
+dist/
+.angular/
+coverage/
+
+# IDE
+.vscode/
+.idea/
+
+# System
+Thumbs.db
+Desktop.ini
+
+# Project Specific
+*.log
+# Database backups or temp files (if any)
+temp/

@@ -1,0 +1,113 @@
+<div class="profile-container">
+    <div class="profile-card">
+
+        <!-- HEADER WITH AVATAR -->
+        <div class="profile-header">
+            <div class="avatar-circle">
+                {{ getInitials() }}
+            </div>
+            <h2>Mi Perfil</h2>
+            <p class="subtitle">Gestiona tu información personal</p>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+            <!-- ALERTS -->
+            <div *ngIf="successMessage" class="alert success">
+                <i class="fa fa-check-circle"></i> {{ successMessage }}
+            </div>
+            <div *ngIf="errorMessage" class="alert error">
+                <i class="fa fa-exclamation-circle"></i> {{ errorMessage }}
+            </div>
+
+            <!-- FORM GRID -->
+            <div class="form-grid">
+
+                <!-- USERNAME -->
+                <div class="form-group full-width">
+                    <label>Nombre de Usuario</label>
+                    <div class="input-wrapper">
+                        <i class="fa fa-user"></i>
+                        <input type="text" formControlName="nombre_usuario" placeholder="Ej. juanperez">
+                    </div>
+                </div>
+
+                <!-- NAMES -->
+                <div class="form-group">
+                    <label>Apellido Paterno</label>
+                    <div class="input-wrapper">
+                        <i class="fa fa-id-card"></i>
+                        <input type="text" formControlName="apPaterno" placeholder="Apellido Paterno">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Apellido Materno</label>
+                    <div class="input-wrapper">
+                        <i class="fa fa-id-card"></i>
+                        <input type="text" formControlName="apMaterno" placeholder="Apellido Materno">
+                    </div>
+                </div>
+
+                <!-- CONTACT -->
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <div class="input-wrapper">
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" formControlName="correo" placeholder="correo@ejemplo.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <div class="input-wrapper">
+                        <i class="fa fa-phone"></i>
+                        <input type="text" formControlName="telefono" placeholder="+51 999 999 999">
+                    </div>
+                </div>
+
+                <!-- PERSONAL INFO -->
+                <div class="form-group">
+                    <label>DNI</label>
+                    <div class="input-wrapper">
+                        <i class="fa fa-address-card"></i>
+                        <input type="text" formControlName="dni" placeholder="DNI">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Edad</label>
+                    <div class="input-wrapper">
+                        <i class="fa fa-birthday-cake"></i>
+                        <input type="number" formControlName="edad" placeholder="Edad">
+                    </div>
+                </div>
+
+                <!-- PAIS -->
+                <div class="form-group full-width">
+                    <label>País</label>
+                    <div class="input-wrapper">
+                        <i class="fa fa-globe"></i>
+                        <select formControlName="idPais">
+                            <option *ngFor="let pais of paises" [value]="pais.idPais">
+                                {{ pais.nombrePais }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+                <button type="button" (click)="goBack()" class="btn-secondary">
+                    Cancelar
+                </button>
+                <button type="submit" [disabled]="profileForm.invalid" class="btn-primary">
+                    Guardar Cambios
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>

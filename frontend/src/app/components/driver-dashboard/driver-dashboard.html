@@ -1,0 +1,97 @@
+<div class="dashboard-container fade-in">
+    <header class="dashboard-header">
+        <h1>Panel del Conductor</h1>
+        <p>Bienvenido, {{ currentUser?.nombre_usuario }}</p>
+    </header>
+
+    <div class="dashboard-content">
+        <!-- CURRENT TRIP CARD -->
+        <section class="current-trip-section">
+            <h2>Viaje Actual</h2>
+            
+            <div *ngIf="loading" class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i> Cargando...
+            </div>
+
+            <div *ngIf="!loading && !currentTrip" class="empty-state-card">
+                <i class="fas fa-bed"></i>
+                <p>No tienes viajes activos o programados próximos.</p>
+            </div>
+
+            <div *ngIf="!loading && currentTrip" class="trip-card active-trip">
+                <div class="trip-status-badge" [class.in-progress]="currentTrip.idEstadoViaje === 4">
+                    {{ currentTrip.nombreEstadoViaje }}
+                </div>
+                
+                <div class="trip-route">
+                    <div class="location">
+                        <span class="label">Origen</span>
+                        <span class="value">{{ currentTrip.origen }}</span>
+                    </div>
+                    <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                    <div class="location">
+                        <span class="label">Destino</span>
+                        <span class="value">{{ currentTrip.destino }}</span>
+                    </div>
+                </div>
+
+                <div class="trip-details-grid">
+                    <div class="detail-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>{{ currentTrip.fechaSalida | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-bus"></i>
+                        <span>{{ currentTrip.placa }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-chair"></i>
+                        <span>{{ currentTrip.asientosOcupados }} / {{ currentTrip.capacidadAsientos }} Oc.</span>
+                    </div>
+                </div>
+
+                <div class="trip-actions">
+                    <button *ngIf="currentTrip.idEstadoViaje === 1" (click)="startTrip()" class="btn-start">
+                        <i class="fas fa-play"></i> Iniciar Viaje
+                    </button>
+                    <button *ngIf="currentTrip.idEstadoViaje === 4" (click)="endTrip()" class="btn-end">
+                        <i class="fas fa-check-circle"></i> Finalizar Viaje
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- HISTORY SECTION -->
+        <section class="history-section">
+            <h2>Historial de Viajes</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Ruta</th>
+                            <th>Estado</th>
+                            <th>Bus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let h of history">
+                            <td>{{ h.fechaSalida | date:'short' }}</td>
+                            <td>{{ h.origen }} - {{ h.destino }}</td>
+                            <td>
+                                <span class="status-pill" [ngClass]="{
+                                    'completed': h.idEstadoViaje === 3,
+                                    'cancelled': h.idEstadoViaje === 5
+                                }">{{ h.estadoViaje }}</span>
+                            </td>
+                            <td>{{ h.placa }}</td>
+                        </tr>
+                        <tr *ngIf="history.length === 0">
+                            <td colspan="4" class="text-center">No hay historial disponible.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>

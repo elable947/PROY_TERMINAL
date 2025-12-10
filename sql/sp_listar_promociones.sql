@@ -1,0 +1,6 @@
+CREATE OR ALTER PROCEDURE sp_ListarPromociones
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT * FROM Promocion ORDER BY fechaInicio DESC;
+END

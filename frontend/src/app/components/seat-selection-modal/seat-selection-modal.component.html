@@ -1,0 +1,81 @@
+<div class="modal-overlay" (click)="close.emit()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Selecciona tu Asiento</h2>
+            <button class="btn-close" (click)="close.emit()"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="modal-body">
+            <!-- STEP 1: SEAT SELECTION -->
+            <ng-container *ngIf="viewState === 'SELECTION'">
+                <div *ngIf="loading" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Cargando mapa de bus...
+                </div>
+
+                <div *ngIf="!loading" class="bus-layout">
+                    <div class="front">
+                        <i class="fas fa-steering-wheel"></i> Conductor
+                    </div>
+
+                    <div class="seats-grid">
+                        <div *ngFor="let seat of seats" class="seat" [ngClass]="{
+                                 'available': seat.disponible, 
+                                 'occupied': !seat.disponible, 
+                                 'selected': selectedSeatId === seat.idAsiento
+                             }" (click)="selectSeat(seat)">
+                            {{ seat.numeroAsiento }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend" *ngIf="!loading">
+                    <div class="item"><span class="dot available"></span> Disponible</div>
+                    <div class="item"><span class="dot occupied"></span> Ocupado</div>
+                    <div class="item"><span class="dot selected"></span> Seleccionado</div>
+                </div>
+            </ng-container>
+
+            <!-- STEP 2: PAYMENT METHOD -->
+            <ng-container *ngIf="viewState === 'PAYMENT'">
+                <h3>Selecciona Método de Pago</h3>
+                <div class="payment-methods">
+                    <div *ngFor="let pm of paymentMethods" class="method-card"
+                        [class.selected]="selectedPaymentId == pm.idMetodoPago"
+                        (click)="selectedPaymentId = pm.idMetodoPago">
+                        <i class="fas fa-money-bill-wave" *ngIf="pm.nombreMetodoPago.includes('EFECTIVO')"></i>
+                        <i class="fas fa-credit-card" *ngIf="!pm.nombreMetodoPago.includes('EFECTIVO')"></i>
+                        <span>{{ pm.nombreMetodoPago }}</span>
+                    </div>
+                </div>
+                <div class="info-note" *ngIf="selectedPaymentId == 3"> <!-- Assuming 3 is Cash based on prev output -->
+                    <i class="fas fa-info-circle"></i> El pago en efectivo generará una <strong>reserva</strong>.
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="modal-footer">
+            <div class="summary" *ngIf="viewState === 'SELECTION' && selectedSeatId">
+                Asiento: <strong>#{{ selectedSeatNum }}</strong>
+            </div>
+
+            <div class="buttons" *ngIf="viewState === 'SELECTION'">
+                <!-- Direct Reserve Button (Optional, can keep) -->
+                <button class="btn-secondary" [disabled]="!selectedSeatId" (click)="confirmReservation()">
+                    <i class="fas fa-bookmark"></i> Reservar
+                </button>
+                <button class="btn-buy" [disabled]="!selectedSeatId" (click)="goToPayment()">
+                    <i class="fas fa-arrow-right"></i> Comprar
+                </button>
+            </div>
+
+            <div class="buttons" *ngIf="viewState === 'PAYMENT'">
+                <button class="btn-secondary" (click)="backToSelection()">
+                    Atrás
+                </button>
+                <button class="btn-buy" [disabled]="!selectedPaymentId || buying" (click)="processAction()">
+                    {{ buying ? 'Procesando...' : 'Confirmar' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

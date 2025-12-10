@@ -1,0 +1,90 @@
+<div class="register-container">
+    <div class="register-card">
+        <h2>Crear Cuenta</h2>
+        <p class="subtitle">Únete a Terminal Chachapoyas</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+            <!-- Role Selection REMOVED -->
+            <input type="hidden" formControlName="idTipoUsuario" value="1">
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Nombre de Usuario</label>
+                    <input type="text" formControlName="nombre_usuario" placeholder="juanperez123"
+                        [class.error]="registerForm.get('nombre_usuario')?.invalid && registerForm.get('nombre_usuario')?.touched">
+                </div>
+
+                <div class="form-group">
+                    <label>DNI / Documento</label>
+                    <input type="text" formControlName="dni" placeholder="12345678"
+                        [class.error]="registerForm.get('dni')?.invalid && registerForm.get('dni')?.touched">
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" formControlName="telefono" placeholder="999 999 999"
+                        [class.error]="registerForm.get('telefono')?.invalid && registerForm.get('telefono')?.touched">
+                </div>
+                <!-- Edad Field added -->
+                <div class="form-group">
+                    <label>Edad</label>
+                    <input type="number" formControlName="edad" placeholder="18"
+                        [class.error]="registerForm.get('edad')?.invalid && registerForm.get('edad')?.touched">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Apellido Paterno</label>
+                    <input type="text" formControlName="apPaterno"
+                        [class.error]="registerForm.get('apPaterno')?.invalid && registerForm.get('apPaterno')?.touched">
+                </div>
+                <div class="form-group">
+                    <label>Apellido Materno</label>
+                    <input type="text" formControlName="apMaterno"
+                        [class.error]="registerForm.get('apMaterno')?.invalid && registerForm.get('apMaterno')?.touched">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" formControlName="correo" placeholder="ejemplo@correo.com"
+                    [class.error]="registerForm.get('correo')?.invalid && registerForm.get('correo')?.touched">
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" formControlName="password" placeholder="••••••••"
+                    [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            </div>
+
+            <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
+            </div>
+
+            <button type="submit" [disabled]="registerForm.invalid || isLoading">
+                <span *ngIf="!isLoading">Registrarse</span>
+                <span *ngIf="isLoading">Creando cuenta...</span>
+            </button>
+        </form>
+
+        <div class="footer-links">
+            <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia Sesión</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- CUSTOM SUCCESS MODAL -->
+<div *ngIf="showSuccessModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>¡Cuenta Creada!</h3>
+        <p>Tu cuenta ha sido registrada exitosamente. Ahora puedes iniciar sesión para continuar.</p>
+        <div class="modal-actions">
+            <button (click)="closeModal()" class="btn-confirm">Aceptar</button>
+        </div>
+    </div>
+</div>

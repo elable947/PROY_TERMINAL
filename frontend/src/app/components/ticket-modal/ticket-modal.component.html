@@ -1,0 +1,68 @@
+<div class="modal-overlay" (click)="close.emit()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Boleta de Venta Electronica</h2>
+            <button class="close-btn" (click)="close.emit()">&times;</button>
+        </div>
+
+        <div class="modal-body" *ngIf="loading">
+            <p>Cargando detalles...</p>
+        </div>
+
+        <div class="modal-body ticket-layout" *ngIf="!loading && ticket">
+            <div class="company-header">
+                <h3>{{ ticket.nombreEmpresa }}</h3>
+                <p>RUC: {{ ticket.ruc }}</p>
+            </div>
+
+            <hr>
+
+            <div class="info-row">
+                <div>
+                    <label>Pasajero:</label>
+                    <p>{{ ticket.nombre_usuario }}</p>
+                    <p>DNI: {{ ticket.dni }}</p>
+                </div>
+                <div>
+                    <label>Fecha de Viaje:</label>
+                    <p>{{ ticket.fechaSalida | date:'short' }}</p>
+                </div>
+            </div>
+
+            <div class="route-info">
+                <div class="point">
+                    <span class="dot"></span> {{ ticket.Origen }}
+                </div>
+                <div class="line"></div>
+                <div class="point">
+                    <span class="dot dest"></span> {{ ticket.Destino }}
+                </div>
+            </div>
+
+            <div class="bus-info">
+                <p><strong>Placa:</strong> {{ ticket.placa }}</p>
+                <p><strong>Bus:</strong> {{ ticket.claseBus }}</p>
+                <p><strong>Asiento:</strong> <span class="seat-badge">{{ ticket.numeroAsiento }}</span></p>
+            </div>
+
+            <hr>
+
+            <div class="payment-info">
+                <p><strong>Método de Pago:</strong> {{ ticket.nombreMetodoPago }}</p>
+                <div class="total-row">
+                    <span>Total Pagado:</span>
+                    <span class="amount">S/ {{ ticket.monto | number:'1.2-2' }}</span>
+                </div>
+                <div class="status-badge" [ngClass]="ticket.nombreEstadoBoleto.toLowerCase()">
+                    {{ ticket.nombreEstadoBoleto }}
+                </div>
+            </div>
+
+            <div class="qr-placeholder">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Ticket-{{ticket.idBoleto}}"
+                    alt="QR Code">
+                <p>Escanea para validar al abordar</p>
+            </div>
+        </div>
+    </div>
+</div>

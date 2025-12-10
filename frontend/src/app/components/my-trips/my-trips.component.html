@@ -1,0 +1,44 @@
+<div class="container fade-in">
+    <h1>Mis Viajes</h1>
+    <p>Historial de tus pasajes comprados y reservados.</p>
+
+    <div *ngIf="loading" class="loading">Cargando historial...</div>
+
+    <div *ngIf="!loading && history.length === 0" class="empty">
+        <p>No tienes viajes registrados aún.</p>
+        <a routerLink="/viajes" class="btn-link">Buscar Viajes</a>
+    </div>
+
+    <div class="history-grid" *ngIf="!loading && history.length > 0">
+        <div class="card" *ngFor="let item of history">
+            <div class="card-header">
+                <span class="date">{{ item.fechaSalida | date:'mediumDate' }}</span>
+                <span class="status" [ngClass]="item.nombreEstadoBoleto.toLowerCase()">{{ item.nombreEstadoBoleto
+                    }}</span>
+            </div>
+            <div class="card-body">
+                <h3>{{ item.Origen }} <i class="fas fa-arrow-right"></i> {{ item.Destino }}</h3>
+                <p class="company">{{ item.nombreEmpresa }}</p>
+                <div class="details">
+                    <span><i class="fas fa-chair"></i> Asiento {{ item.numeroAsiento }}</span>
+                    <span><i class="fas fa-bus"></i> {{ item.claseBus }}</span>
+                </div>
+                <div class="price">
+                    S/ {{ item.precio | number:'1.2-2' }}
+                </div>
+            </div>
+            <div class="card-footer" style="display: flex; gap: 10px;">
+                <button class="btn-ticket" (click)="openTicket(item.idBoleto)">
+                    <i class="fas fa-receipt"></i> Boleta
+                </button>
+                <button *ngIf="item.idEstadoBoleto === 1" class="btn-cancel"
+                    (click)="cancelReservation(item.idBoleto, $event)">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <app-ticket-modal *ngIf="showModal && selectedTicketId" [ticketId]="selectedTicketId" (close)="closeModal()">
+    </app-ticket-modal>
+</div>

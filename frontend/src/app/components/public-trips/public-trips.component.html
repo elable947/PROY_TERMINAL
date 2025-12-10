@@ -1,0 +1,88 @@
+<div class="container fade-in">
+    <div class="header-section">
+        <h1>Explora Amazonas</h1>
+        <p>Encuentra tu próximo destino con nosotros.</p>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters-bar">
+        <div class="filter-group">
+            <i class="fas fa-map-marker-alt"></i>
+            <select [(ngModel)]="selectedDest" (change)="searchTrips()">
+                <option value="">Todos los Destinos</option>
+                <option *ngFor="let d of destinations" [value]="d.idDestino">{{ d.nombreDestino }}</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <i class="fas fa-building"></i>
+            <select [(ngModel)]="selectedCompany" (change)="searchTrips()">
+                <option value="">Todas las Empresas</option>
+                <option *ngFor="let c of companies" [value]="c.idEmpresaTransporte">{{ c.nombreEmpresa }}</option>
+            </select>
+        </div>
+
+        <button *ngIf="selectedDest || selectedCompany" (click)="clearFilters()" class="btn-clear">
+            <i class="fas fa-times"></i> Limpiar
+        </button>
+    </div>
+
+    <!-- LOADING & EMPTY -->
+    <div *ngIf="loading" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Buscando viajes...
+    </div>
+
+    <div *ngIf="!loading && trips.length === 0" class="empty-state">
+        <i class="fas fa-search"></i>
+        <h3>No se encontraron viajes</h3>
+        <p>Intenta cambiar los filtros de búsqueda.</p>
+    </div>
+
+    <!-- TRIP GRID -->
+    <div *ngIf="!loading" class="trips-grid">
+        <div class="trip-card" *ngFor="let t of trips">
+            <div class="trip-time">
+                <span class="departure">{{ t.fechaSalida | date:'shortTime' }}</span>
+                <span class="date">{{ t.fechaSalida | date:'mediumDate' }}</span>
+            </div>
+
+            <div class="trip-route">
+                <div class="line"></div>
+                <div class="point origin">
+                    <span class="dot"></span>
+                    <strong>{{ t.origen }}</strong>
+                </div>
+                <div class="point dest">
+                    <span class="dot target"></span>
+                    <strong>{{ t.destino }}</strong>
+                </div>
+                <div class="route-meta">
+                    <small *ngIf="t.duracionAprox"><i class="fas fa-clock"></i> {{ t.duracionAprox }}</small>
+                    <small *ngIf="t.distanciakm"><i class="fas fa-road"></i> {{ t.distanciakm }} km</small>
+                </div>
+            </div>
+
+            <div class="trip-details">
+                <div class="company-info">
+                    <i class="fas fa-bus"></i>
+                    <span>{{ t.nombreEmpresa }}</span>
+                </div>
+                <div class="bus-info">
+                    <small>{{ t.claseBus || 'Estándar' }}</small>
+                    <small class="seats">{{ t.asientosDisponibles }} asientos lib.</small>
+                </div>
+            </div>
+
+            <div class="trip-price">
+                <span class="price">S/ {{ t.precio | number:'1.2-2' }}</span>
+                <button class="btn-book" (click)="openPurchaseModal(t)">Comprar Pasaje</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PURCHASE MODAL -->
+    <!-- PURCHASE MODAL -->
+    <app-seat-selection-modal *ngIf="showPurchaseModal && selectedTripId" [tripId]="selectedTripId"
+        [trip]="selectedTrip" (close)="closePurchaseModal()" (purchaseSuccess)="onPurchaseSuccess($event)">
+    </app-seat-selection-modal>
+</div>

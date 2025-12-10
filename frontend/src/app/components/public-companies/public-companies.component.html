@@ -1,0 +1,48 @@
+<div class="container fade-in">
+    <div class="header-section">
+        <h1>nuestras empresas</h1>
+        <p>Conoce las empresas de transporte que operan desde Terminal Terrestre Chachapoyas.</p>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Cargando empresas...
+    </div>
+
+    <div *ngIf="!loading && companies.length === 0" class="empty-state">
+        <p>No hay empresas registradas.</p>
+    </div>
+
+    <div class="companies-grid" *ngIf="!loading">
+        <div class="company-card" *ngFor="let c of companies" [routerLink]="['/trips']"
+            [queryParams]="{idEmpresa: c.idEmpresaTransporte}">
+            <div class="card-image">
+                <img [src]="c.bannerUrl ? c.bannerUrl : 'assets/images/default-bus.jpg'" [alt]="c.nombreEmpresa"
+                    onerror="this.src='assets/images/default-bus.jpg'">
+                <div class="overlay"></div>
+                <div class="icon-circle">
+                    <i class="fas fa-bus"></i>
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>{{ c.nombreEmpresa }}</h3>
+                <p class="phone-info"><i class="fas fa-phone-alt"></i> {{ c.telefonoEmpresa || 'No disponible' }}</p>
+
+                <!-- Social Networks -->
+                <div class="social-icons" *ngIf="c.redesSociales && c.redesSociales.length > 0"
+                    (click)="$event.stopPropagation()">
+                    <a *ngFor="let s of c.redesSociales" [href]="s.url" target="_blank" rel="noopener noreferrer"
+                        [title]="s.red">
+                        <i class="fab fa-facebook" *ngIf="s.red === 'Facebook'"></i>
+                        <i class="fab fa-instagram" *ngIf="s.red === 'Instagram'"></i>
+                        <i class="fab fa-twitter" *ngIf="s.red === 'Twitter' || s.red === 'X'"></i>
+                        <i class="fab fa-whatsapp" *ngIf="s.red === 'WhatsApp'"></i>
+                        <i class="fab fa-tiktok" *ngIf="s.red === 'TikTok'"></i>
+                        <i class="fas fa-globe"
+                            *ngIf="['Facebook','Instagram','Twitter','X','WhatsApp','TikTok'].indexOf(s.red) === -1"></i>
+                    </a>
+                </div>
+                <button class="btn-view">Ver Viajes</button>
+            </div>
+        </div>
+    </div>
+</div>

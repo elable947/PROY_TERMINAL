@@ -1,0 +1,41 @@
+<nav class="navbar">
+    <div class="container nav-container">
+        <a routerLink="/" class="logo">
+            <i class="fas fa-bus-alt"></i>
+            Terminal<span>Chachapoyas</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+            <li><a routerLink="/trips" routerLinkActive="active">Viajes</a></li>
+            <li><a routerLink="/public-companies" routerLinkActive="active">Empresas</a></li>
+        </ul>
+
+        <div class="auth-buttons" *ngIf="(currentUser$ | async) === null">
+            <a routerLink="/login" class="btn btn-outline">Iniciar Sesión</a>
+            <a routerLink="/register" class="btn btn-primary">Registrarse</a>
+        </div>
+
+        <div class="user-profile" *ngIf="currentUser$ | async as user">
+            <span class="user-name">
+                Hola, {{ user.nombre_usuario }}
+                <span *ngIf="user.idTipoUsuario === 3" class="badge-admin">(Admin)</span>
+            </span>
+            <a routerLink="/my-trips" class="btn btn-sm btn-outline"
+                style="padding: 5px 10px; font-size: 0.8rem; margin-right: 10px;">
+                <i class="fas fa-ticket-alt"></i> Mis Viajes
+            </a>
+            <a routerLink="/profile" class="btn btn-sm btn-outline" style="padding: 5px 10px; font-size: 0.8rem;">
+                <i class="fas fa-user-edit"></i> Perfil
+            </a>
+            <a *ngIf="user.idTipoUsuario === 3" routerLink="/admin" class="btn btn-sm btn-admin">Panel Admin</a>
+            <a *ngIf="user.idTipoUsuario === 2" routerLink="/company" class="btn btn-sm btn-admin"
+                style="background-color: #2ecc71;">Panel Empresa</a>
+            <a *ngIf="user.idTipoUsuario === 4" routerLink="/driver" class="btn btn-sm btn-admin"
+                style="background-color: #e67e22;">Panel Conductor</a>
+            <button (click)="logout()" class="btn btn-sm btn-logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,56 @@
+<div class="hero-section">
+    <div class="hero-content">
+        <h1>Terminal Terrestre Chachapoyas <br><span>Conectando Amazonas</span></h1>
+        <p>Viaja seguro a todos los destinos del departamento y regiones vecinas.</p>
+
+        <div class="search-box">
+            <form (ngSubmit)="searchBus()">
+                <div class="search-inputs">
+                    <div class="input-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Origen</label>
+                        <select name="origin" [(ngModel)]="searchData.origin" disabled>
+                            <option value="1">Chachapoyas</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fas fa-location-arrow"></i> Destino</label>
+                        <select name="destination" [(ngModel)]="searchData.destination">
+                            <option value="" disabled selected>Selecciona destino</option>
+                            <option *ngFor="let destino of destinos" [value]="destino.idDestino">
+                                {{ destino.nombreDestino }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="far fa-calendar-alt"></i> Fecha</label>
+                        <input type="date" name="date" [(ngModel)]="searchData.date">
+                    </div>
+
+                    <button type="submit" class="btn-search">
+                        Buscar Pasajes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="features-section container">
+    <div class="feature-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Pago Seguro</h3>
+        <p>Tus transacciones están protegidas con los más altos estándares de seguridad.</p>
+    </div>
+    <div class="feature-card">
+        <i class="fas fa-clock"></i>
+        <h3>Ahorra Tiempo</h3>
+        <p>Compra tus pasajes en minutos sin hacer largas colas en el terminal.</p>
+    </div>
+    <div class="feature-card">
+        <i class="fas fa-bus"></i>
+        <h3>Mejores Empresas</h3>
+        <p>Trabajamos con las empresas de transporte más confiables del país.</p>
+    </div>
+</div>

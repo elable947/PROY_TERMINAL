@@ -1,0 +1,171 @@
+<div class="container" style="padding-top: 80px;">
+    <h2><i class="fas fa-id-badge"></i> Panel del Conductor</h2>
+
+    <div *ngIf="currentUser" style="margin-bottom: 25px;">
+        <p class="welcome-text">Bienvenido, <strong>{{ currentUser.nombre_usuario }}</strong></p>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div *ngIf="loading" class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i> Cargando viaje actual...
+    </div>
+
+    <!-- CURRENT TRIP CARD -->
+    <div *ngIf="!loading && currentTrip" class="trip-card">
+        <div class="trip-header">
+            <h3><i class="fas fa-route"></i> Viaje Activo</h3>
+            <span class="status-badge" [ngClass]="{
+                'status-scheduled': currentTrip.idEstadoViaje === 1,
+                'status-inprogress': currentTrip.idEstadoViaje === 4
+            }">{{ currentTrip.nombreEstadoViaje }}</span>
+        </div>
+
+        <div class="trip-body">
+            <div class="route-info">
+                <div class="point">
+                    <span class="label">Origen</span>
+                    <strong class="value">{{ currentTrip.origen }}</strong>
+                </div>
+                <div class="connector">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>{{ currentTrip.duracionAprox }}</span>
+                </div>
+                <div class="point">
+                    <span class="label">Destino</span>
+                    <strong class="value">{{ currentTrip.destino }}</strong>
+                </div>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <span>Salida Programada</span>
+                        <strong>{{ currentTrip.fechaSalida | date:'short' }}</strong>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-bus"></i>
+                    <div>
+                        <span>Unidad ({{ currentTrip.placa }})</span>
+                        <strong style="font-size: 1.1em;">
+                            <i class="fas fa-users" style="font-size: 0.8em; margin-right: 5px;"></i>
+                            {{ currentTrip.asientosOcupados || 0 }} / {{ currentTrip.capacidadAsientos }}
+                        </strong>
+                        <span style="font-size: 0.75em; color: #718096; display: inline;"> ocupados</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="trip-actions">
+                <button *ngIf="currentTrip.idEstadoViaje === 1" (click)="startTrip()" class="btn-start">
+                    <i class="fas fa-play"></i> Iniciar Viaje
+                </button>
+
+                <button *ngIf="currentTrip.idEstadoViaje === 4" (click)="endTrip()" class="btn-end">
+                    <i class="fas fa-flag-checkered"></i> Finalizar Viaje
+                </button>
+                <button (click)="openPassengersModal()" class="btn-info"
+                    style="background: #3182ce; color: white; border: none; padding: 15px 40px; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(49, 130, 206, 0.4);">
+                    <i class="fas fa-users"></i> Pasajeros
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passengers Modal -->
+    <div class="modal-overlay" *ngIf="showPassengersModal" (click)="closePassengersModal()">
+        <div class="modal-content table-modal" (click)="$event.stopPropagation()">
+            <h3>Lista de Pasajeros</h3>
+            <div class="table-container">
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Asiento</th>
+                            <th>Pasajero</th>
+                            <th>DNI</th>
+                            <th>Origen</th>
+                            <th>Destino</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of passengers">
+                            <td class="seat-cell">{{ p.numeroAsiento }}</td>
+                            <td>{{ p.Pasajero }}</td>
+                            <td>{{ p.dni }}</td>
+                            <td>{{ p.Origen }}</td>
+                            <td>{{ p.Destino }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="p.Estado.toLowerCase()">{{ p.Estado }}</span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="passengers.length === 0">
+                            <td colspan="5">No hay pasajeros registrados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn-close-modal" (click)="closePassengersModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- NO TRIP STATE -->
+    <div *ngIf="!loading && !currentTrip" class="no-trip-card">
+        <i class="fas fa-coffee"></i>
+        <h3>No tienes viajes activos</h3>
+        <p>Tus próximas asignaciones aparecerán aquí.</p>
+    </div>
+
+    <!-- HISTORY SECTION -->
+    <div *ngIf="tripHistory.length > 0" class="history-section" style="margin-top: 40px;">
+        <h3><i class="fas fa-history"></i> Historial de Viajes</h3>
+        <div class="table-responsive">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Ruta</th>
+                        <th>Bus</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let t of tripHistory">
+                        <td>{{ t.fechaSalida | date:'mediumDate' }}</td>
+                        <td>
+                            <div style="font-weight: 500;">{{ t.origen }} <i class="fas fa-arrow-right"
+                                    style="font-size: 0.8em; color:#aaa;"></i> {{ t.destino }}</div>
+                        </td>
+                        <td>{{ t.placa }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="{
+                                'status-scheduled': t.idEstadoViaje === 1,
+                                'status-inprogress': t.idEstadoViaje === 4,
+                                'status-completed': t.idEstadoViaje === 2,
+                                'status-cancelled': t.idEstadoViaje === 3
+                            }">{{ t.nombreEstadoViaje }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- CUSTOM CONFIRM MODAL -->
+    <div *ngIf="confirmModal.isOpen" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas" [ngClass]="confirmModal.icon"></i>
+            </div>
+            <h3>{{ confirmModal.title }}</h3>
+            <p>{{ confirmModal.message }}</p>
+            <div class="modal-actions">
+                <button (click)="closeConfirm()" class="btn-cancel">Cancelar</button>
+                <button (click)="confirmAction()" class="btn-confirm">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
